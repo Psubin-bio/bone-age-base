@@ -19,7 +19,7 @@ from model_multimodal import MultiModalModel
 
 # 데이터 전처리
 transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((512, 512)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485], std=[0.229])  # Grayscale 이미지를 위한 정규화
 ])
