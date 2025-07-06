@@ -64,11 +64,11 @@ transform = transforms.Compose([
 
 # 데이터 로딩
 print("----------------start data loading----------------")
-train_df = pd.read_csv('./rsna-bone-age/boneage-training-dataset.csv')
-test_df = pd.read_csv('./rsna-bone-age/boneage-test-dataset.csv')
+train_df = pd.read_csv('../rsna-bone-age/boneage-training-dataset.csv')
+test_df = pd.read_csv('../rsna-bone-age/boneage-test-dataset.csv')
 
-train_dataset = BoneAgeDataset(train_df, './rsna-bone-age/boneage-training-dataset/boneage-training-dataset', transform=transform)
-test_dataset = BoneAgeDataset(test_df, './rsna-bone-age/boneage-test-dataset/boneage-test-dataset', transform=transform)
+train_dataset = BoneAgeDataset(train_df, '../rsna-bone-age/boneage-training-dataset/boneage-training-dataset', transform=transform)
+test_dataset = BoneAgeDataset(test_df, '../rsna-bone-age/boneage-test-dataset/boneage-test-dataset', transform=transform)
 
 # Calculate the sizes for training and validation sets (e.g., 80-20 split)
 print("----------------data split (8:2) ----------------")

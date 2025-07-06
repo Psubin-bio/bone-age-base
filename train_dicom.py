@@ -13,13 +13,13 @@ from torch.utils.data.dataset import random_split
 import numpy as np
 import pydicom
 from pydicom.pixel_data_handlers.util import apply_modality_lut, apply_voi_lut
-from dataset import BoneAgeDataset
+from dataset import BoneAgeDataset, BoneAgeDataset_png
 from utils import plot_performance
-from model_multimodal import MultiModalModel
+from model_multimodal import MultiModalModel_swintrans
 
 # 데이터 전처리
 transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((384, 384)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485], std=[0.229])  # Grayscale 이미지를 위한 정규화
 ])
@@ -27,6 +27,7 @@ transform = transforms.Compose([
 # 데이터 로딩
 print("----------------start data loading----------------")
 print("----------------start data loading----------------")
+'''
 train_df = pd.read_csv('../smc-bone-age/boneage-training-dataset.csv')
 test_df = pd.read_csv('../smc-bone-age/boneage-inference-dataset.csv')
 
@@ -36,9 +37,9 @@ test_dataset = BoneAgeDataset(test_df, '../smc-bone-age/boneage_nofolder', trans
 train_df = pd.read_csv('../rsna-bone-age/boneage-training-dataset.csv')
 test_df = pd.read_csv('../rsna-bone-age/boneage-test-dataset.csv')
 
-train_dataset = BoneAgeDataset(train_df, '../rsna-bone-age/boneage-training-dataset/boneage-training-dataset', transform=transform)
-test_dataset = BoneAgeDataset(test_df, '../rsna-bone-age/boneage-test-dataset/boneage-test-dataset', transform=transform)
-'''
+train_dataset = BoneAgeDataset_png(train_df, '../rsna-bone-age/boneage-training-dataset/boneage-training-dataset', transform=transform)
+test_dataset = BoneAgeDataset_png(test_df, '../rsna-bone-age/boneage-test-dataset/boneage-test-dataset', transform=transform)
+
 
 # Calculate the sizes for training and validation sets (e.g., 80-20 split)
 print("----------------data split (8:2) ----------------")
@@ -59,12 +60,18 @@ print("----------------model setting----------------")
     
 # 기기 설정
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = MultiModalModel().to(device)
+model = MultiModalModel_swintrans().to(device)
+
+if torch.cuda.device_count() > 1:
+    print(f"Using {torch.cuda.device_count()} GPUs")
+    model = nn.DataParallel(model)
+
+model = model.cuda()
 
 
 # Load pre-trained weights
-model.load_state_dict(torch.load('../checkpoint/bone_age_model.pth'))
-print("Loaded pre-trained weights from '../checkpoint/bone_age_model.pth'")
+#model.load_state_dict(torch.load('../checkpoint/bone_age_model.pth'))
+#print("Loaded pre-trained weights from '../checkpoint/bone_age_model.pth'")
 
 
 # 손실 함수 및 최적화

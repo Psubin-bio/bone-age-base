@@ -24,6 +24,8 @@ def plot_performance(training_losses, validation_losses, validation_maes):
     plt.legend()
 
     plt.tight_layout()
+
+    plt.savefig('../checkpoint/plots/training_mae_swin.png')
     plt.show()
 
 
